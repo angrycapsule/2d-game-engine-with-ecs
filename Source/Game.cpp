@@ -1,7 +1,12 @@
 #include "Game.h"
 
+#include <filesystem>
 #include <iostream>
+#include <string>
 #include "SDL.h"
+#include "SDL_image.h"
+
+static std::string GetAssetPath(const std::string& rel);
 
 Game::Game()
 {
@@ -54,8 +59,15 @@ void Game::Initialize()
 	isRunning = true;
 }
 
+void Game::Setup()
+{
+
+}
+
 void Game::Run() 
 {
+	Setup();
+
 	while (isRunning)
 	{
 		ProcessInput();
@@ -63,6 +75,7 @@ void Game::Run()
 		Render();
 	}
 }
+
 void Game::ProcessInput()
 {
 	SDL_Event event;
@@ -90,10 +103,20 @@ void Game::Update()
 
 void Game::Render()
 {
-	SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+	SDL_SetRenderDrawColor(renderer, 21, 21, 21, 255);
 	SDL_RenderClear(renderer);
 
-	// TODO:: Render all objects
+	const std::string assetPath = GetAssetPath("Assets/Images/tank-tiger-right.png");
+
+	SDL_Surface* surface = IMG_Load(assetPath.c_str());
+	SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+	SDL_FreeSurface(surface);
+
+	SDL_Rect dstRect = { 10, 10, 32, 32 };
+
+	SDL_RenderCopy(renderer, texture, NULL, &dstRect);
+
+	SDL_DestroyTexture(texture);
 
 	SDL_RenderPresent(renderer);
 }
@@ -103,4 +126,11 @@ void Game::Destroy()
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	SDL_Quit();
+}
+
+static std::string GetAssetPath(const std::string& rel)
+{
+	namespace fs = std::filesystem;
+	fs::path root = PROJECT_SOURCE_DIR;
+	return (root / rel).string();
 }

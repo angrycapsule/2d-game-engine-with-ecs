@@ -72,6 +72,8 @@ target_link_libraries(2d-game-engine-with-ecs PRIVATE
   sol
 )
 
+target_compile_definitions(2d-game-engine-with-ecs PRIVATE PROJECT_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
+
 if (HAVE_GLM_TARGET)
   target_link_libraries(2d-game-engine-with-ecs PRIVATE glm::glm)
 else()
