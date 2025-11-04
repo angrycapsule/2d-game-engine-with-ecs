@@ -3,19 +3,27 @@
 #include <filesystem>
 #include <iostream>
 #include <string>
+
+#include "glm/glm.hpp"
 #include "SDL.h"
 #include "SDL_image.h"
+#include "SDL_ttf.h"
+
+#include "../Logger/Logger.h"
+
+glm::vec2 playerPosition;
+glm::vec2 playerMoveDirection;
 
 static std::string GetAssetPath(const std::string& rel);
 
-Game::Game()
+Game::Game() : isRunning(false), millisecondsPreviousFrame(0)
 {
-	std::cout << "Game constructor called!" << std::endl;
+	Logger::Log("Game constructor called!");
 }
 
 Game::~Game()
 {
-	std::cout << "Game destructor called!" << std::endl;
+	Logger::Log("Game destructor called!");
 }
 
 void Game::Initialize()
@@ -24,7 +32,7 @@ void Game::Initialize()
 
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
 	{
-		std::cerr << "Error initializating SDL!" << std::endl;
+		Logger::Err("Error initializating SDL!");
 		return;
 	}
 
@@ -43,14 +51,14 @@ void Game::Initialize()
 		SDL_WINDOW_BORDERLESS);
 	if (!window)
 	{
-		std::cerr << "Error creating SDL window!" << std::endl;
+		Logger::Err("Error creating SDL window!");
 		return;
 	}
 
 	renderer = SDL_CreateRenderer(window, -1, 0);
 	if (!renderer)
 	{
-		std::cerr << "Error creating SDL renderer!" << std::endl;
+		Logger::Err("Error creating SDL renderer!");
 		return;
 	}
 
@@ -61,7 +69,8 @@ void Game::Initialize()
 
 void Game::Setup()
 {
-
+	playerPosition = { 10, 20 };
+	playerMoveDirection = { 100, 0 };
 }
 
 void Game::Run() 
@@ -98,7 +107,21 @@ void Game::ProcessInput()
 
 void Game::Update()
 {
+	// If need FPS clamping
+	/*
+	int timeToWait = MILLISECONDS_PER_FRAME - (SDL_GetTicks() - millisecondsPreviousFrame);
+	
+	if (timeToWait > 0.0f && timeToWait <= MILLISECONDS_PER_FRAME)
+	{
+		SDL_Delay(timeToWait);
+	}
+	*/
 
+	double deltaTime = (SDL_GetTicks() - millisecondsPreviousFrame) / 1000.0;
+
+	millisecondsPreviousFrame = SDL_GetTicks();
+
+	playerPosition.x += playerMoveDirection.x * deltaTime;
 }
 
 void Game::Render()
@@ -112,7 +135,11 @@ void Game::Render()
 	SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
 	SDL_FreeSurface(surface);
 
-	SDL_Rect dstRect = { 10, 10, 32, 32 };
+	SDL_Rect dstRect = { 
+		playerPosition.x, 
+		playerPosition.y, 
+		32, 
+		32 };
 
 	SDL_RenderCopy(renderer, texture, NULL, &dstRect);
 

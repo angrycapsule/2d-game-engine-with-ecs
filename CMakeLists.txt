@@ -56,10 +56,11 @@ add_library(sol INTERFACE)
 target_include_directories(sol INTERFACE "${LIBRARY_DIR}")
 
 # -------------------- Executable --------------------
-add_executable(2d-game-engine-with-ecs
-  "Source/Main.cpp"
-  "Source/Game.h" 
-  "Source/Game.cpp")
+
+file(GLOB_RECURSE PROJECT_SOURCE 
+	"Source/*.cpp" 
+	"Source/*.h")
+add_executable(2d-game-engine-with-ecs ${PROJECT_SOURCE})
 
 target_link_libraries(2d-game-engine-with-ecs PRIVATE
   SDL2::SDL2
