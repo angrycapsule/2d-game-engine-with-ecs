@@ -10,9 +10,7 @@
 #include "SDL_ttf.h"
 
 #include "../Logger/Logger.h"
-
-glm::vec2 playerPosition;
-glm::vec2 playerMoveDirection;
+#include "../ECS/ECS.h"
 
 static std::string GetAssetPath(const std::string& rel);
 
@@ -69,8 +67,7 @@ void Game::Initialize()
 
 void Game::Setup()
 {
-	playerPosition = { 10, 20 };
-	playerMoveDirection = { 100, 0 };
+	
 }
 
 void Game::Run() 
@@ -120,8 +117,6 @@ void Game::Update()
 	double deltaTime = (SDL_GetTicks() - millisecondsPreviousFrame) / 1000.0;
 
 	millisecondsPreviousFrame = SDL_GetTicks();
-
-	playerPosition.x += playerMoveDirection.x * deltaTime;
 }
 
 void Game::Render()
@@ -131,19 +126,21 @@ void Game::Render()
 
 	const std::string assetPath = GetAssetPath("Assets/Images/tank-tiger-right.png");
 
+	/*
 	SDL_Surface* surface = IMG_Load(assetPath.c_str());
 	SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
 	SDL_FreeSurface(surface);
 
 	SDL_Rect dstRect = { 
-		playerPosition.x, 
-		playerPosition.y, 
+		10, 
+		20, 
 		32, 
 		32 };
 
 	SDL_RenderCopy(renderer, texture, NULL, &dstRect);
 
 	SDL_DestroyTexture(texture);
+	*/
 
 	SDL_RenderPresent(renderer);
 }
