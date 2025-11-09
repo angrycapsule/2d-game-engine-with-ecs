@@ -12,6 +12,8 @@
 #include "../Logger/Logger.h"
 #include "../ECS/ECS.h"
 
+#include "../Components/TransformComponent.h"
+
 static std::string GetAssetPath(const std::string& rel);
 
 Game::Game() : isRunning(false), millisecondsPreviousFrame(0)
@@ -72,6 +74,14 @@ void Game::Setup()
 
 void Game::Run() 
 {
+	const auto i = Component<TransformComponent>::GetId();
+	const auto i1 = Component<TransformComponent>::GetId();
+	const auto i2 = Component<TransformComponent>::GetId();
+
+	Logger::Log(std::to_string(i));
+	Logger::Log(std::to_string(i1));
+	Logger::Log(std::to_string(i2));
+
 	Setup();
 
 	while (isRunning)
