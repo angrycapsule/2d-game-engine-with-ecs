@@ -13,6 +13,7 @@
 #include "../ECS/ECS.h"
 
 #include "../Components/TransformComponent.h"
+#include "../Components/RigidbodyComponent.h"
 
 static std::string GetAssetPath(const std::string& rel);
 
@@ -71,7 +72,8 @@ void Game::Initialize()
 void Game::Setup()
 {
 	Entity tank = registry->CreateEntity();
-	Entity truck = registry->CreateEntity();
+	tank.AddComponent<TransformComponent>(glm::vec2(30.0f, 30.0f), glm::vec2(1.0, 1.0), 0.0);
+	tank.AddComponent<RigidbodyComponent>(glm::vec2(50.0f, 0.0f));
 }
 
 void Game::Run() 
