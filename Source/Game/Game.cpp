@@ -12,8 +12,12 @@
 #include "../Logger/Logger.h"
 #include "../ECS/ECS.h"
 
+#include "../Systems/MovementSystem.h"
+#include "../Systems/RenderSystem.h"
+
 #include "../Components/TransformComponent.h"
 #include "../Components/RigidbodyComponent.h"
+#include "../Components/SpriteComponent.h"
 
 static std::string GetAssetPath(const std::string& rel);
 
@@ -71,9 +75,13 @@ void Game::Initialize()
 
 void Game::Setup()
 {
+	registry->AddSystem<MovementSystem>();
+	registry->AddSystem<RenderSystem>();
+
 	Entity tank = registry->CreateEntity();
 	tank.AddComponent<TransformComponent>(glm::vec2(30.0f, 30.0f), glm::vec2(1.0, 1.0), 0.0);
 	tank.AddComponent<RigidbodyComponent>(glm::vec2(50.0f, 0.0f));
+	tank.AddComponent<SpriteComponent>(10, 10);
 }
 
 void Game::Run() 
@@ -123,6 +131,10 @@ void Game::Update()
 	double deltaTime = (SDL_GetTicks() - millisecondsPreviousFrame) / 1000.0;
 
 	millisecondsPreviousFrame = SDL_GetTicks();
+
+	registry->GetSystem<MovementSystem>().Update(deltaTime);
+
+	registry->Update();
 }
 
 void Game::Render()
@@ -130,7 +142,7 @@ void Game::Render()
 	SDL_SetRenderDrawColor(renderer, 21, 21, 21, 255);
 	SDL_RenderClear(renderer);
 
-	const std::string assetPath = GetAssetPath("Assets/Images/tank-tiger-right.png");
+	// const std::string assetPath = GetAssetPath("Assets/Images/tank-tiger-right.png");
 
 	/*
 	SDL_Surface* surface = IMG_Load(assetPath.c_str());
@@ -147,6 +159,8 @@ void Game::Render()
 
 	SDL_DestroyTexture(texture);
 	*/
+
+	registry->GetSystem<RenderSystem>().Update(renderer);
 
 	SDL_RenderPresent(renderer);
 }

@@ -45,6 +45,7 @@ public:
 	int GetId() const;
 
 	Registry* registry;
+
 	template <typename TComponent, typename ...TArgs> void AddComponent(TArgs&& ...args);
 	template <typename TComponent> void RemoveComponent();
 	template <typename TComponent> bool HasComponent() const;
@@ -179,7 +180,7 @@ void System::RequireComponent()
 template <typename TSystem, typename ...TArgs> 
 void Registry::AddSystem(TArgs&& ...args)
 {
-	std::shared_ptr<TSystem> newSystem = std::make_shared<TSystem>(std::forward<TArgs>(args...));
+	std::shared_ptr<TSystem> newSystem = std::make_shared<TSystem>(std::forward<TArgs>(args)...);
 	systems.insert(std::make_pair(std::type_index(typeid(TSystem)), newSystem));
 }
 

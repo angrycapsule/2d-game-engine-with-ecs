@@ -1,19 +1,34 @@
 #ifndef MOVEMENTSYSTEM_H
 #define MOVEMENTSYSTEM_H
 
+#include <string>
+
+#include "../Logger/Logger.h"
 #include "../ECS/ECS.h"
+#include "../Components/TransformComponent.h"
+#include "../Components/RigidbodyComponent.h"
 
 class MovementSystem : public System
 {
 public:
 	MovementSystem()
 	{
-		
+		RequireComponent<TransformComponent>();
+		RequireComponent<RigidbodyComponent>();
 	}
 
-	void Update()
+	void Update(float deltaTime)
 	{
-		
+		for (auto entity : GetSystemEntities())
+		{
+			auto& transform = entity.GetComponent<TransformComponent>();
+			const auto rigidbody = entity.GetComponent<RigidbodyComponent>();
+
+			transform.position.x += rigidbody.velocity.x * deltaTime;
+			transform.position.y += rigidbody.velocity.y * deltaTime;
+
+			Logger::Log("Entity with id " + std::to_string(entity.GetId()) + " new position is x:" + std::to_string(transform.position.x) + " y:" + std::to_string(transform.position.y));
+		}
 	}
 };
 
