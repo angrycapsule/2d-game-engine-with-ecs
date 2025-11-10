@@ -18,6 +18,7 @@ static std::string GetAssetPath(const std::string& rel);
 
 Game::Game() : isRunning(false), millisecondsPreviousFrame(0)
 {
+	registry = std::make_unique<Registry>();
 	Logger::Log("Game constructor called!");
 }
 
@@ -69,19 +70,12 @@ void Game::Initialize()
 
 void Game::Setup()
 {
-	
+	Entity tank = registry->CreateEntity();
+	Entity truck = registry->CreateEntity();
 }
 
 void Game::Run() 
 {
-	const auto i = Component<TransformComponent>::GetId();
-	const auto i1 = Component<TransformComponent>::GetId();
-	const auto i2 = Component<TransformComponent>::GetId();
-
-	Logger::Log(std::to_string(i));
-	Logger::Log(std::to_string(i1));
-	Logger::Log(std::to_string(i2));
-
 	Setup();
 
 	while (isRunning)
